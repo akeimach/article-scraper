@@ -17,7 +17,7 @@ $(document.body).ready(function() {
 
 function displaySavedArticles() {
   $(".saved-container").empty(); // first remove old articles
-  $.get("/api/articles?saved=true").then(function(data) {
+  $.get("/api/articles/" + true).then(function(data) {
     console.log(data);
     if (data) {
       for (var i = 0; i < 5; i++) {

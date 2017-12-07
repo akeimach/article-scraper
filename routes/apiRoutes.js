@@ -32,9 +32,9 @@ router.get("/api/scrape", function(req, res) {
   res.json("Scrape Complete");
 });
 
-router.get("/api/articles", function(req, res) {
+router.get("/api/articles/:saved", function(req, res) {
   db.Article
-    .find({})
+    .find( { "saved": req.params.saved } )
     .then(function(dbArticle) {
       res.json(dbArticle);
     })
@@ -57,8 +57,9 @@ router.get("/api/articles/:id", function(req, res) {
 
 router.put("/api/articles/:id", function(req, res) {
   db.Article
-    .findOne({ _id: req.params.id })
-    .update({ $set: { saved: true }})
+    .findOneAndUpdate({ _id: req.params.id }, { saved: true })
+    // .findOne({ _id: req.params.id })
+    // .update({ $set: { saved: true }})
     .then(function(dbArticle) {
       res.json(dbArticle);
     })

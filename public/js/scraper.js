@@ -19,7 +19,7 @@ function startScrape() {
 
 function displayArticles() {
   $(".article-container").empty(); // first remove old articles
-  $.get("/api/articles?saved=false").then(function(data) {
+  $.get("/api/articles/" + false).then(function(data) {
     if (data) {
       for (var i = 0; i < 5; i++) {
 
