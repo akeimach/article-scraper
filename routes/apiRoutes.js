@@ -33,34 +33,50 @@ router.get("/api/scrape", function(req, res) {
 });
 
 
-router.get("/api/articles/:saved", function(req, res) {
-  db.Article
-    .find( { "saved": req.params.saved } )
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-  });
+router.get("/api/articles/:query", function(req, res) {
+  console.log("router id ", req.params.query);
+  console.log("router saved ", req.params.query);
+  console.log(typeof(req.params.query));
+  if ((req.params.query === "true") || (req.params.query === "false")) {
+    db.Article
+      .find( { "saved": req.params.query } )
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+    });
+
+  } else {
+    db.Article
+      .findOne({ _id: req.params.query })
+      .populate("note")
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+    });
+  }
 });
+
+
+// router.get("/api/articles/:saved", function(req, res) {
+//   console.log("router saved", req.params.saved);
+//   db.Article
+//     .find( { "saved": req.params.saved } )
+//     .then(function(dbArticle) {
+//       res.json(dbArticle);
+//     })
+//     .catch(function(err) {
+//       res.json(err);
+//   });
+// });
 
 
 router.put("/api/articles/:id/:saved", function(req, res) {
   db.Article
     .findOneAndUpdate({ _id: req.params.id }, { saved: req.params.saved })
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-  });
-});
-
-
-router.get("/api/articles/:id", function(req, res) {
-  db.Article
-    .findOne({ _id: req.params.id })
-    .populate("note")
     .then(function(dbArticle) {
       res.json(dbArticle);
     })

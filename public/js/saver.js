@@ -3,7 +3,7 @@ $(document.body).ready(function() {
   displaySavedArticles();
 
   $(document).on("click", ".unsave-article", unsaveArticle);
-  $(document).on("click", ".article-notes", articleNotes);
+  $(document).on("click", ".article-notes", getArticleNotes);
   $(document).on("click", "#savenote", saveArticleNotes);
 });
 
@@ -16,6 +16,7 @@ function displaySavedArticles() {
   }).then(function(data) {
     if (data) {
       for (var i = 0; i < 5; i++) {
+        console.log(data[i]);
 
         var article = $("<div>");
         article.addClass("card");
@@ -52,30 +53,31 @@ function displaySavedArticles() {
 }
 
 
-function articleNotes() {
+function getArticleNotes() {
   event.preventDefault();
   $("#note-content").empty(); // remove the content from last time
   var id = $(this)[0].attributes[1].value;
+  console.log(id);
   $.ajax({
     method: "GET",
     url: "/api/articles/" + id
   }).done(function(data) {
-    
+    console.log("getnotes");
     console.log(data);
-    $("#note-content").append("<h2>" + data[0].title + "</h2>");
+    $("#note-content").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
-      $("#note-content").append("<input id='titleinput'>");
+      //$("#note-content").append("<input id='titleinput'>");
       // A textarea to add a new note body
       $("#note-content").append("<textarea id='bodyinput' placeholder='Your note'></textarea>");
       // A button to submit a new note, with the id of the article saved to it
-      $("#note-content").append("<button data-id='" + data[0]._id + "' id='savenote'>Save Note</button>");
+      $("#note-content").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
       // If there's a note in the article
-      if (data[0].note) {
+      if (data.note) {
         // Place the title of the note in the title input
-        $("#titleinput").val(data[0].note.title);
+        // $("#titleinput").val(data.note.title);
         // Place the body of the note in the body textarea
-        $("#bodyinput").val(data[0].note.body);
+        $("#bodyinput").val(data.note.body);
       }
       $("#note-modal").modal("toggle");
   });
@@ -89,7 +91,7 @@ function saveArticleNotes() {
     method: "POST",
     url: "/api/articles/" + noteId,
     data: {
-      title: $("#titleinput").val(),
+      //title: $("#titleinput").val(),
       // Value taken from note textarea
       body: $("#bodyinput").val()
     }
