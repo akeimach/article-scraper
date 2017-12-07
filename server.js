@@ -1,48 +1,31 @@
 var express = require("express");
-var mongojs = require("mongojs");
+var exphbs = require("express-handlebars");
 var mongoose = require("mongoose");
-var request = require("request");
-var cheerio = require("cheerio");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var apiRoutes = require("./routes/apiRoutes");
+var htmlRoutes = require("./routes/htmlRoutes");
 
 var app = express();
 
+app.use(logger("dev")); // log requests
+app.use(bodyParser.urlencoded({ extended: false })); // for form submissions
+app.use(express.static("public"));
+app.use("/", apiRoutes);
+app.use("/", htmlRoutes);
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 // mongo configuration
-var databaseUrl = "article_scraper";
+// var databaseUrl = "article_scraper";
 var collections = ["articles"];
 
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) { // hook mongo config into db variable
-  console.log("Database Error:", error);
+mongoose.Promise = Promise;
+mongoose.connect("mongodb://localhost/article_scraper", {
+  useMongoClient: true
 });
 
-app.get("/", function(req, res) {
-  res.send("Test");
-});
-
-app.get("/all", function(req, res) {
-  db.collections.find({}, function(error, found) {
-    res.json(found);
-  });
-});
-
-app.get("/scrape", function(req, res) {
-    request("http://www.awwwards.com/websites/clean/", function(error, response, html) {
-      // Load the HTML into cheerio
-      var $ = cheerio.load(html);
-      // Make an empty array for saving our scraped info
-      var results = [];
-      // With cheerio, look at each award-winning site, enclosed in "figure" tags with the class name "rollover"
-      $("figure.rollover").each(function(i, element) {
-        var imgLink = $(element).find("a").find("img").attr("srcset").split(",")[0].split(" ")[0];
-        // Push the image's URL (saved to the imgLink var) into the results array
-        results.push({ link: imgLink });
-        db.collections.insert({link: imgLink});
-      });
-      // After looping through each element found, log the results to the console
-      console.log(results);
-    });
-    res.send("scrape");
-});
 
 app.listen(8080, function() {
   console.log("App running on port 8080!");
