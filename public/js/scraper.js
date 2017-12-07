@@ -3,23 +3,30 @@ $(document.body).ready(function() {
   displayArticles();
 
   $("#start-scraper").on("click", startScrape);
-  $(document).on("click", ".save-article", saveArticle);
   $("#scrape-success-close").on("click", function(event) {
     location.reload();
   });
+  $(document).on("click", ".save-article", saveArticle);
+  
 
 });
 
 function startScrape() {
   event.preventDefault();
-  $.get("/api/scrape").then(function(data) {
+  $.ajax({
+    method: "GET",
+    url: "/api/scrape"
+  }).then(function(data) {
     $("#scrape-success").modal("toggle");
   });
 }
 
 function displayArticles() {
   $(".article-container").empty(); // first remove old articles
-  $.get("/api/articles/" + false).then(function(data) {
+  $.ajax({
+    method: "GET",
+    url: "/api/articles/" + false,
+  }).then(function(data) {
     if (data) {
       for (var i = 0; i < 5; i++) {
 
@@ -37,7 +44,7 @@ function displayArticles() {
         var saveButton = $("<button>");
         saveButton.addClass("btn");
         saveButton.addClass("save-article");
-        saveButton.attr("id", data[i]._id);
+        saveButton.attr("data", data[i]._id);
         saveButton.text("Save Article");
 
         body.append(saveButton);
@@ -52,12 +59,11 @@ function displayArticles() {
 
 function saveArticle() {
   event.preventDefault();
-  var id = $(this)[0].id;
-  $.ajax("/api/articles/" + id, {
-    method: "PUT",
-    data: { "saved": true },
+  var id = $(this)[0].attributes[1].value;
+  $.ajax("/api/articles/" + id + "/" + true, {
+    method: "PUT"
   }).then(function(result) {
-    console.log("SUCCESS");
+    console.log("SAVE SUCCESS");
   });
 }
 

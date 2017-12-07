@@ -32,6 +32,7 @@ router.get("/api/scrape", function(req, res) {
   res.json("Scrape Complete");
 });
 
+
 router.get("/api/articles/:saved", function(req, res) {
   db.Article
     .find( { "saved": req.params.saved } )
@@ -42,6 +43,19 @@ router.get("/api/articles/:saved", function(req, res) {
       res.json(err);
   });
 });
+
+
+router.put("/api/articles/:id/:saved", function(req, res) {
+  db.Article
+    .findOneAndUpdate({ _id: req.params.id }, { saved: req.params.saved })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+  });
+});
+
 
 router.get("/api/articles/:id", function(req, res) {
   db.Article
@@ -55,18 +69,6 @@ router.get("/api/articles/:id", function(req, res) {
   });
 });
 
-router.put("/api/articles/:id", function(req, res) {
-  db.Article
-    .findOneAndUpdate({ _id: req.params.id }, { saved: true })
-    // .findOne({ _id: req.params.id })
-    // .update({ $set: { saved: true }})
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-  });
-});
 
 router.post("/api/articles/:id", function(req, res) {
   db.Note
