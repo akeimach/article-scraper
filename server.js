@@ -22,11 +22,12 @@ app.set("view engine", "handlebars");
 var collections = ["articles"];
 
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/article_scraper", {
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
 
 
-app.listen(8080, function() {
+app.listen(process.env.PORT || 8080, function() {
   console.log("App running on port 8080!");
 });
