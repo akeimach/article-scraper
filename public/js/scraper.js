@@ -3,7 +3,7 @@ $(document.body).ready(function() {
   displayArticles();
 
   $("#start-scraper").on("click", startScrape);
-  $("#scrape-success-close").on("click", function(event) {
+  $(".scrape-success-close").on("click", function(event) {
     location.reload();
   });
   $(document).on("click", ".save-article", saveArticle);
@@ -25,11 +25,11 @@ function displayArticles() {
   $(".article-container").empty(); // first remove old articles
   $.ajax({
     method: "GET",
-    url: "/api/articles/" + false,
+    url: "/api/articles",
   }).then(function(data) {
     console.log(data);
     if (data) {
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < data.length; i++) {
 
         var article = $("<div>");
         article.addClass("card");
@@ -61,8 +61,9 @@ function displayArticles() {
 function saveArticle() {
   event.preventDefault();
   var id = $(this)[0].attributes[1].value;
-  $.ajax("/api/articles/" + id + "/" + true, {
-    method: "PUT"
+  $.ajax({
+    method: "PUT",
+    url: "/api/articles/" + id
   }).then(function(result) {
     console.log("SAVE SUCCESS");
   });

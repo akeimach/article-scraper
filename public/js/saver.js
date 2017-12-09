@@ -12,10 +12,11 @@ function displaySavedArticles() {
   $(".saved-container").empty(); // first remove old articles
   $.ajax({
     method: "GET",
-    url: "/api/articles/" + true
+    url: "/api/articles/saved"
   }).then(function(data) {
+    console.log(data);
     if (data) {
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < data.length; i++) {
         console.log(data[i]);
 
         var article = $("<div>");
@@ -60,7 +61,7 @@ function getArticleNotes() {
   console.log(id);
   $.ajax({
     method: "GET",
-    url: "/api/articles/" + id
+    url: "/api/articles/saved/" + id
   }).done(function(data) {
     console.log("getnotes");
     console.log(data);
@@ -84,15 +85,13 @@ function getArticleNotes() {
 }
 
 function saveArticleNotes() {
-  var noteId = $(this).attr("data-id");
-  console.log(noteId);
+  var id = $(this).attr("data-id");
+  console.log(id);
   console.log($("#bodyinput").val());
   $.ajax({
     method: "POST",
-    url: "/api/articles/" + noteId,
+    url: "/api/articles/saved/" + id,
     data: {
-      //title: $("#titleinput").val(),
-      // Value taken from note textarea
       body: $("#bodyinput").val()
     }
   }).done(function(data) {
@@ -106,7 +105,7 @@ function unsaveArticle() {
   var id = $(this)[0].attributes[1].value;
   $.ajax({
     method: "PUT",
-    url: "/api/articles/" + id + "/" + false
+    url: "/api/articles/saved/" + id
   }).then(function(result) {
     console.log("UNSAVE SUCCESS");
   });
