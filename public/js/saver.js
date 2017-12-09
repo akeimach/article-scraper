@@ -29,9 +29,9 @@ function getArticleNotes() {
   }).done(function(data) {
     $("#note-content").append("<h4>" + data.title + "</h4>");
     
-    $("#note-content").append("<textarea id='bodyinput' placeholder='Your note'></textarea>");
+    $("#note-content").append("<div class='form-group'><textarea class='form-control' rows='3' id='bodyinput' placeholder='Your note'></textarea></div>");
     // A button to submit a new note, with the id of the article saved to it
-    $("#note-content").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+    $("#note-content").append("<button class='btn btn-secondary' data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
     if (data.note) {
       $("#bodyinput").val(data.note.body);
