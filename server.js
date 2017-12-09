@@ -22,7 +22,7 @@ app.set("view engine", "handlebars");
 var collections = ["articles"];
 
 mongoose.Promise = Promise;
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/article-scraper";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articleScraper";
 mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });

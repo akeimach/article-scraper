@@ -38,6 +38,7 @@ router.get("/api/articles", function(req, res) {
   db.Article
     .find( { "saved": false } )
     .then(function(dbArticle) {
+      // console.log(dbArticle);
       res.json(dbArticle);
     })
     .catch(function(err) {

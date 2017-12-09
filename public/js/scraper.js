@@ -6,6 +6,9 @@ $(document.body).ready(function() {
   $(".scrape-success-close").on("click", function(event) {
     location.reload();
   });
+  $(".save-success-close").on("click", function(event) {
+    location.reload();
+  });
   $(document).on("click", ".save-article", saveArticle);
   
 
@@ -22,39 +25,9 @@ function startScrape() {
 }
 
 function displayArticles() {
-  $(".article-container").empty(); // first remove old articles
   $.ajax({
     method: "GET",
     url: "/api/articles",
-  }).then(function(data) {
-    console.log(data);
-    if (data) {
-      for (var i = 0; i < data.length; i++) {
-
-        var article = $("<div>");
-        article.addClass("card");
-
-        var header = $("<div>");
-        header.addClass("card-header");
-        header.html("<a href='" + data[i].link + "' target='_blank'>" + data[i].title + "</a>");
-
-        var body = $("<div>");
-        body.addClass("card-body");
-        body.html("<p>" + data[i].summary + "</p>");
-
-        var saveButton = $("<button>");
-        saveButton.addClass("btn");
-        saveButton.addClass("save-article");
-        saveButton.attr("data", data[i]._id);
-        saveButton.text("Save Article");
-
-        body.append(saveButton);
-        article.append(header);
-        article.append(body);
-        $(".article-container").append(article);
-        $(".article-container").append("<br>");
-      }
-    }
   });
 }
 
@@ -65,7 +38,7 @@ function saveArticle() {
     method: "PUT",
     url: "/api/articles/" + id
   }).then(function(result) {
-    console.log("SAVE SUCCESS");
+    $("#save-success").modal("toggle");
   });
 }
 
