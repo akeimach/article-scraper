@@ -7,15 +7,15 @@ var router = express.Router();
 router.get("/api/scrape", function(req, res) {
 
   // request for nyt articles
-  request("https://www.nytimes.com/", function(error, response, html) {
+  request("https://medium.com/", function(error, response, html) {
     // Load the html body from request into cheerio
     var $ = cheerio.load(html);
-    $("h2.story-heading a").each(function(i, element) {
+    $("div.u-flexColumnTop.u-flexWrap.u-overflowHidden.u-absolute0.u-xs-relative").each(function(i, element) {
       var result = {};
-      result.link = $(this).attr("href");
-      result.title = $(this).text();
+      result.link = $(this).children("div").children("a").attr("href");
+      result.title = $(this).children("div").children("a").text().trim();
+      result.summary = $(this).children("a").children("h4").text().trim();
       result.saved = false;
-      result.summary = "todo";
       if (result.title && result.link) {
         db.Article
           .create(result)
